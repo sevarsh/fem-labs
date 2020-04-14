@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     inter = Interpolation(function, np.asarray(rect_shape))
 
-    inter.omega.triangulate(6)
+    inter.omega.triangulate(num_of_nodes)
     inter.omega.draw_net()
 
 # Задать исследуемую функцию
