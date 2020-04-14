@@ -9,7 +9,7 @@ class Rectangle(Region):
         self.x_int = [shape[:, 0].min(), shape[:, 0].max()]
         self.y_int = [shape[:, 1].min(), shape[:, 1].max()]
 
-    def flatten(self, n):
+    def _flatten(self, n):
         n += 1
 
         def half_step(interval):

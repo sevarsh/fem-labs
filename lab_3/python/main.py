@@ -1,19 +1,18 @@
 import numpy as np
+from math import sin
 
-from shapes.rectangle import Rectangle
+from interpolation.interpolation import Interpolation
 
 
 if __name__ == "__main__":
+    def function(x, y): return sin(x - y)
     rect_shape = [[1, 1], [1, 3], [2, 3], [2, 1]]
     num_of_nodes = 10
 
-    rect = Rectangle(np.asarray(rect_shape))
+    inter = Interpolation(function, np.asarray(rect_shape))
 
-    # rect.draw()
-
-    rect.flatten(num_of_nodes)
-    rect.triangulate()
-    rect.draw_net()
+    inter.omega.triangulate(6)
+    inter.omega.draw_net()
 
 # Задать исследуемую функцию
 # Построить линейный интерполянт

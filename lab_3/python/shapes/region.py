@@ -13,7 +13,8 @@ class Region(ABC):
     def __init__(self, shape):
         self.shape = shape
 
-    def triangulate(self):
+    def triangulate(self, n):
+        self._flatten(n)
         x = self.x_coords
         y = self.y_coords
         self.triangles = tri.Triangulation(x, y)
@@ -29,7 +30,7 @@ class Region(ABC):
     # generate flatten coords of the net points
     # with specified discretization steps
     @abstractmethod
-    def flatten(self, n):
+    def _flatten(self, n):
         pass
 
     def draw(self):
