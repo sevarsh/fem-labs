@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
-import matplotlib.patches as patches
+import numpy as np
 
 
 class Region(ABC):
@@ -33,9 +33,11 @@ class Region(ABC):
         pass
 
     def draw(self):
-        fig, ax = plt.subplots(1)
-        shape = patches.Polygon(self.shape)
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        shape = plt.Polygon(self.shape, color='g', alpha=0.3)
         ax.add_patch(shape)
+        plt.plot()
         plt.show()
 
     def draw_net(self):

@@ -4,16 +4,17 @@ from shapes.rectangle import Rectangle
 
 
 if __name__ == "__main__":
-    s = [[1, 1], [1, 3], [2, 3], [2, 1]]
-    rect = Rectangle(np.asarray(s))
-    for i in range(1, 10):
-        rect = Rectangle(np.asarray(s))
-        rect.flatten(i)
-        rect.triangulate()
-        rect.draw_net()
+    rect_shape = [[1, 1], [1, 3], [2, 3], [2, 1]]
+    num_of_nodes = 10
 
-# Задать простую полигональную область
-# Задать сетку
+    rect = Rectangle(np.asarray(rect_shape))
+
+    # rect.draw()
+
+    rect.flatten(num_of_nodes)
+    rect.triangulate()
+    rect.draw_net()
+
 # Задать исследуемую функцию
 # Построить линейный интерполянт
 # Численно посчитать градиент
