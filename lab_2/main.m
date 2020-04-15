@@ -1,35 +1,72 @@
+clear;
+
 gm = [3;4;0;1;1;0;1;1;0;0];
 sf = 'domain1';
 ns = [100;111;109;97;105;110;49];
 [dl, bt] = decsg(gm, sf, ns);
-%pdegplot(dl)
-%axis equal
-%xlim([-0.1, 1.1])
-
 [p, e, t] = initMesh(dl);
 
-h = zeros(1, 4)
-err1 = h;
-err2 = h;
-h(1) = 0.03125
-h(2) = h(1)/4;
-h(3) = h(2)/4;
-h(4) = h(3)/4;
+numOfPartials = 2;
+[p, e, t] = refine(numOfPartials, dl, p, e, t);
 
-for i=1:4
-     [p, e, t] = refinemesh(dl, p, e, t, 'regular');
-     vh = fem_2D(p, t, e);
-    %uh = analyticOnGrid(p);
+f = @(x, y) 2 * (x*(1 - x) + y*(1 - y));
+analytic = @(x, y) x*(1 - x)*y*(1 - y);
 
-    disp('Норма погрешности в L^2: ')
-    err1(i) = errorFEM(vh, t, p)
-    disp('Норма погрешности градиента L^2: ')
-    err2(i) = gradErrorFEM(vh, t, p)
+vh = fem_2D(p, t, e, f);
+
+fprintf('Норма погрешности в L^2: %d \n', errorFEM(vh, t, p, analytic));
+fprintf('Норма погрешности градиента L^2: %d \n', gradErrorFEM(vh, t, p, @grad));
+
+draw_analytic(analytic);
+draw_solution(t, p, vh);
+
+
+% Source functions
+function [p, e, t] = initMesh(dl)
+    [p, e, t] = initmesh(dl, 'hmax', inf);
+    [p, e, t] = refinemesh(dl, p, e, t, 'regular');
 end
 
-figure
-plot(h, h)
-hold on
-plot(h, err1)
-hold on
-grid on
+function [p, e, t] = refine(num, dl, p, e, t)
+    for i=1:num
+        [p, e, t] = refinemesh(dl, p, e, t, 'regular');
+    end
+end
+
+% Draw funcions
+function draw_solution(t, p, vh)
+    tr = t;
+    tr(4,:) = [];
+
+    figure
+    trimesh(transpose(tr), transpose(p(1, :)), transpose(p(2, :)))
+    title('Результат построения сетки')
+
+    figure
+    trisurf(transpose(tr), transpose(p(1, :)), transpose(p(2, :)), vh)
+    xlabel('x')
+    ylabel('y')
+    zlabel('z')
+    title('Решение задачи, полученное методом конечных элементов')
+end
+
+function draw_analytic(analytic)
+    xt = 0:0.005:1;
+    n = length(xt);
+    yt = 0:0.005:1;
+    zt = zeros(n, n);
+    for i=1:n
+        for j = 1:n
+            zt(i, j) = analytic(xt(i), yt(j));
+        end
+    end
+    [Xt, Yt] = meshgrid(xt, yt);
+
+    figure 
+    surf(Xt, Yt, zt)
+    title('Точное решение задачи')
+    shading interp
+end
+
+
+
