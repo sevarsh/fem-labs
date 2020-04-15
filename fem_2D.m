@@ -1,8 +1,12 @@
-function v = fem_2D(p, t, e)
+function v = fem_2D(p, t, e, f)
 n = length(t(1, :));
 m = length(p(1, :)); 
 M = zeros(m, m);
 R = zeros(m, 1);
+
+getTriangle = @(t, num) t(:, num);
+dot = @(x, y) x(1)*y(1) + x(2)*y(2);
+getMiddleValue = @(a, b, func) func((a(1) + b(1))/2, (a(2) + b(2))/2);
 
 for i=1:n
     elem = getTriangle(t, i);
@@ -13,9 +17,9 @@ for i=1:n
     v2 = getPoint(p, elem(2));
     v3 = getPoint(p, elem(3));
     
-    f12 = getMiddleValue(v1, v2, @f);
-    f13 = getMiddleValue(v1, v3, @f);
-    f23 = getMiddleValue(v3, v2, @f);
+    f12 = getMiddleValue(v1, v2, f);
+    f13 = getMiddleValue(v1, v3, f);
+    f23 = getMiddleValue(v3, v2, f);
     
     R(elem(1)) = R(elem(1)) + a*(f12 + f13)/6;
     R(elem(2)) = R(elem(2)) + a*(f12 + f23)/6;
